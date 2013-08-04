@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    h1= title
+    p Welcome to #{title}
+        include login.jade
+
+
+    p
+    - var headers = ['a', 'b', 'c'];
+
+    table
+        tr
+          each header in headers
+              th= header

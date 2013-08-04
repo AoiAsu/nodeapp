@@ -1,0 +1,19 @@
+
+if user
+    form(method='post', action='/')
+        input(name='_method', type='hidden', value='DELETE')
+        p #{user.name}さん、こんにちは!
+        a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
+
+else
+    p ログインしてください。
+    form(method='post', action='/')
+        fieldset
+            legend ログイン
+            p
+                label(for='user[name]') ユーザ名
+                input(name='user[name]')
+            p
+                label(for='user[pwd]') パスワード
+                input(type='password', name='user[pwd]')
+            input(type='submit')
