@@ -1,12 +1,22 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "express": "3.3.4",
-    "jade": "*"
-  }
+    "name": "application-name",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "3.3.4",
+        "jade": "*",
+        "connect-flash": "*",
+        "underscore": ">=1.4.2",
+        "async": "0.2.9",
+        "log4js": "*"
+    },
+    "devDependencies": {
+        "mocha": ">=1.7.4",
+        "should": ">=1.2.1",
+        "sinon": ">=1.5.2",
+        "jshint": ">=1.1.0"
+    }
 }
