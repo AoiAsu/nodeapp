@@ -7,7 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+    , flash = require('connect-flash');
 
 var app = express();
 
@@ -21,9 +22,11 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('takamineasukikey'));
 app.use(express.session());
+app.use(flash());
 app.use(require('./login'));
 app.use(function(req, res, next) {
     res.locals.user = req.session.user;
+    res.locals.flash = req.flash();
     next();
 });
 app.use(app.router);
@@ -37,6 +40,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.post('/', routes.index);
 app.del('/', routes.index);
+app.get('/user', user.list);
 app.get('/:page', routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
