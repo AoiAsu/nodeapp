@@ -1,13 +1,13 @@
 
 if user
-    form(method='post', action='/')
+    form(method='post')
         input(name='_method', type='hidden', value='DELETE')
         p #{user.name}さん、こんにちは!
         a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
 
 else
     p ログインしてください。
-    form(method='post', action='/')
+    form(method='post')
         fieldset
             legend ログイン
             p

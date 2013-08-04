@@ -21,6 +21,11 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('takamineasukikey'));
 app.use(express.session());
+app.use(require('./login'));
+app.use(function(req, res, next) {
+    res.locals.user = req.session.user;
+    next();
+});
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,10 +35,9 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.post('/', routes.login, routes.index);
-app.del('/', routes.logout, routes.index);
-app.get('/users', user.list);
-app.get('/:name', routes.name);
+app.post('/', routes.index);
+app.del('/', routes.index);
+app.get('/:page', routes.index);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
