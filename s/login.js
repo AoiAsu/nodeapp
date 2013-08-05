@@ -4,6 +4,7 @@
  * @auther Asuki Takamine <takamine_asuki@cyberagent.co.jp>
  */
 var userService = require('./service/user');
+var util = require('./util');
 
 var users = {
     'admin': 'admin'
@@ -25,7 +26,7 @@ function validate(user, callback) {
         if (!result) {
             return callback({msg: 'ログイン情報に誤りがあります。'});
         }
-        if (user.pwd !== result.pwd) {
+        if (util.createHash(user.pwd) !== result.pwd) {
             return callback({msg: 'ログイン情報に誤りがあります。'});
         }
         return callback();
@@ -34,6 +35,9 @@ function validate(user, callback) {
 
 module.exports = function(req, res, next) {
     // TODO ログインチェック対象外
+    if (req.url === '/user/register') {
+        return next();
+    }
 
     var method = req.method.toLowerCase();
     var user = req.body.user;
