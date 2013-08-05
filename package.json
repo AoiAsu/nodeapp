@@ -10,6 +10,7 @@
         "jade": "*",
         "connect-flash": "*",
         "mongodb": "0.9.9-8",
+        "validator": "1.4.0",
         "underscore": ">=1.4.2",
         "async": "0.2.9",
         "log4js": "*"

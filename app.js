@@ -25,6 +25,7 @@ app.use(express.session());
 app.use(flash());
 app.use(require('./s/login'));
 app.use(function(req, res, next) {
+    res.locals.title = 'Asuki';
     res.locals.user = req.session.user;
     res.locals.flash = req.flash();
     next();
