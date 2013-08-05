@@ -1,6 +1,6 @@
 /**
- * mongoと接続するクラス
- * @file db.js
+ * @fileOverview mongoと接続するクラス
+ * @file database.js
  * @author Asuki Takamine <takamine_asuki@cyberagent.co.jp>
  */
 var mongo = require('mongodb');

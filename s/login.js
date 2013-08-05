@@ -1,18 +1,40 @@
+/**
+ * @fileOverview login check
+ * @id login.js
+ * @auther Asuki Takamine <takamine_asuki@cyberagent.co.jp>
+ */
+var userService = require('./service/user');
+
 var users = {
-    'asuki': 'takamine'
+    'admin': 'admin'
 };
 
 function validate(user, callback) {
-    var valid = Object.keys(users).some(function(name) {
-        return user.name === name && user.pwd === users[name];
+    var isAdmin = Object.keys(users).some(function(userId) {
+        return user.userId === userId && user.pwd === users[userId];
     });
-    if (!valid) {
-        return callback({msg: 'ログイン情報に誤りがあります。'});
+    if (isAdmin) {
+        return callback();
     }
-    return callback();
+
+    userService.get(user.userId, function(err, result) {
+        if (err) {
+            console.log(err);
+            return callback({msg: 'ログインに失敗しました。'});
+        }
+        if (!result) {
+            return callback({msg: 'ログイン情報に誤りがあります。'});
+        }
+        if (user.pwd !== result.pwd) {
+            return callback({msg: 'ログイン情報に誤りがあります。'});
+        }
+        return callback();
+    });
 }
 
 module.exports = function(req, res, next) {
+    // TODO ログインチェック対象外
+
     var method = req.method.toLowerCase();
     var user = req.body.user;
     var logout = (method === 'delete');
@@ -52,7 +74,7 @@ module.exports = function(req, res, next) {
             }
 
             req.session.user = {
-                name: user.name,
+                userId: user.userId,
                 pwd: user.pwd
             };
             return next();
