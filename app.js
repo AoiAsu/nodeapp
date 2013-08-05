@@ -11,6 +11,7 @@ var express = require('express')
     , flash = require('connect-flash');
 
 var app = express();
+app.locals.compiler = require('./s/customJadeCompiler');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -22,12 +23,14 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('takamineasukikey'));
 app.use(express.session());
+app.use(express.csrf());
 app.use(flash());
 app.use(require('./s/login'));
 app.use(function(req, res, next) {
     res.locals.title = 'Asuki';
     res.locals.user = req.session.user;
     res.locals.flash = req.flash();
+    res.locals._csrf = req.session._csrf;
     next();
 });
 app.use(app.router);

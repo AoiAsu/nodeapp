@@ -6,7 +6,7 @@ if user
     form(method='post')
         input(name='_method', type='hidden', value='DELETE')
         p #{user.userId}さん、こんにちは!
-        include logout.jade
+        include logout
 
 else
     p ログインしてください。
