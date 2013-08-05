@@ -23,7 +23,7 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('takamineasukikey'));
 app.use(express.session());
 app.use(flash());
-app.use(require('./login'));
+app.use(require('./s/login'));
 app.use(function(req, res, next) {
     res.locals.user = req.session.user;
     res.locals.flash = req.flash();
