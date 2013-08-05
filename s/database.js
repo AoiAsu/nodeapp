@@ -3,6 +3,7 @@
  * @file database.js
  * @author Asuki Takamine <takamine_asuki@cyberagent.co.jp>
  */
+var async = require('async');
 var mongo = require('mongodb');
 
 var collections = {};
@@ -22,6 +23,11 @@ function Database() {
 
 module.exports = new Database();
 
+/**
+ * コレクション名からcollectionを取得します。
+ * @param {String} name コレクション名
+ * @param {Function} callback
+ */
 Database.prototype.getCollection = function(name, callback) {
     if (!name) {
         return callback(new Error('[ Db ] name is require.'));
@@ -42,4 +48,33 @@ Database.prototype.getCollection = function(name, callback) {
 
         return callback(null, collection);
     });
+};
+
+/**
+ * コレクション名の配列から{name: collection}のmapを返却します。
+ * @param {Array} names コレクション名の配列
+ * @param {Function} callback
+ */
+Database.prototype.getCollections = function(names, callback) {
+    var self = this;
+    var cols = {};
+    async.forEach(names, function(name, next) {
+        self.getCollection(name, function(err, col) {
+            if (err) {
+                return next(err);
+            }
+            cols[name] = col;
+            next();
+        });
+    },function(err) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, cols);
+    });
+};
+
+Database.prototype.getCol = function(name) {
+    console.log('get', name);
+    return collections[name];
 };

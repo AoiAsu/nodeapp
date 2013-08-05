@@ -6,7 +6,7 @@ if user
     form(method='post')
         input(name='_method', type='hidden', value='DELETE')
         p #{user.userId}さん、こんにちは!
-        a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
+        include logout.jade
 
 else
     p ログインしてください。

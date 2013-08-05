@@ -47,4 +47,16 @@ describe('s/database.js', function() {
         });
 
     });
+
+    describe('#getCollections', function() {
+        it('OK', function(done) {
+            database.getCollections(['A', 'B', 'C'], function(err, cols) {
+                should.not.exist(err);
+                should.exist(cols.A);
+                should.exist(cols.B);
+                should.exist(cols.C);
+                done();
+            });
+        });
+    });
 });
