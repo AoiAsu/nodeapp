@@ -2,7 +2,7 @@ var should = require('should');
 var sinon = require('sinon');
 
 // テスト対象
-var database = require('../s/database');
+var database = require('../../s/mongo/database');
 
 describe('s/database.js', function() {
     var sandbox = sinon.sandbox.create();

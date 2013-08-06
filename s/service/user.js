@@ -3,8 +3,11 @@
  * @file user.js
  * @author Asuki Takamine <takamine_asuki@cyberagent.co.jp>
  */
-var database = require('../database');
+var database = require('../mongo/database');
 var util = require('../util');
+var mongo = require('../mongo');
+
+var userMongo = mongo.get('User');
 
 function UserService() {
 }
@@ -16,13 +19,7 @@ UserService.prototype.get = function(id, callback) {
         return callback(new Error());
     }
 
-    database.getCollection('User', function(err, col) {
-        if (err) {
-            return callback(err);
-        }
-        col.findOne({_id: id}, callback);
-    });
-
+    userMongo.get({ _id: id }, {}, callback);
 };
 
 /**
@@ -31,16 +28,12 @@ UserService.prototype.get = function(id, callback) {
  * @param {Function} callback
  */
 UserService.prototype.register = function(user, callback) {
-    database.getCollection('User', function(err, col) {
-        if (err) {
-            return callback(err);
-        }
-        var hash = util.createHash(user.pwd);
+    var hash = util.createHash(user.pwd);
 
-        var data = {
-            _id: user.userId,
-            pwd: hash
-        };
-        col.insert(data, {safe: true}, callback);
-    });
+    var data = {
+        _id: user.userId,
+        pwd: hash
+    };
+
+    userMongo.insert(data, callback);
 };
