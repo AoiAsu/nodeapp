@@ -5,7 +5,6 @@
 
 var express = require('express')
     , routes = require('./routes')
-    , user = require('./routes/user/register')
     , http = require('http')
     , path = require('path')
     , flash = require('connect-flash');
@@ -41,14 +40,7 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.post('/', routes.index);
-app.del('/', routes.index);
-//app.get('/user', user.list);
-app.get('/user/register', user.get);
-app.post('/user/register', user.post);
-app.get('/:page', routes.index);
-
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
+    routes.setUp(app);
 });
