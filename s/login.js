@@ -1,7 +1,7 @@
 /**
  * @fileOverview login check
  * @id login.js
- * @auther Asuki Takamine <takamine_asuki@cyberagent.co.jp>
+ * @auther Asuki Takamine
  */
 var userService = require('./service/user');
 var util = require('./util');

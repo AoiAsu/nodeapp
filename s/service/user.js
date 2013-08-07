@@ -1,7 +1,7 @@
 /**
  * @fileOverview UserService
  * @file user.js
- * @author Asuki Takamine <takamine_asuki@cyberagent.co.jp>
+ * @author Asuki Takamine
  */
 var database = require('../mongo/database');
 var util = require('../util');

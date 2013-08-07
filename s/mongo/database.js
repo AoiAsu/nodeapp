@@ -1,7 +1,7 @@
 /**
  * @fileOverview mongoと接続するクラス
  * @file database.js
- * @author Asuki Takamine <takamine_asuki@cyberagent.co.jp>
+ * @author Asuki Takamine
  */
 var async = require('async');
 var mongo = require('mongodb');
