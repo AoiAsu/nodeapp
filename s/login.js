@@ -20,7 +20,7 @@ function validate(user, callback) {
 
     userService.get(user.userId, function(err, result) {
         if (err) {
-            console.log(err);
+            console.error(err);
             return callback({msg: 'ログインに失敗しました。'});
         }
         if (!result) {
