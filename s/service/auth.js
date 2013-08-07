@@ -2,8 +2,12 @@
 var async = require('async');
 
 var mongo = require('../mongo');
+var util = require('../util');
 
 var userMongo = mongo.get('User');
+
+var LOCK_TIME = 5 * 60 * 1000; // 5分
+var LOCK_FAILURE_COUNT = 5;
 
 function AuthService() {
 
@@ -11,13 +15,13 @@ function AuthService() {
 
 module.exports = new AuthService();
 
-AuthService.prototype.login = function(id, pwd, callback) {
+AuthService.prototype.login = function(userId, pwd, callback) {
     var user;
     var now = Date.now();
     async.series([
         function(next) {
             // ユーザー情報取得
-            userMongo.get({ _id: id }, {}, function(err, result) {
+            userMongo.get({ _id: userId }, {}, function(err, result) {
                 if (err) {
                     console.log('failed get User. id:', userId);
                     return next(err);
@@ -36,12 +40,12 @@ AuthService.prototype.login = function(id, pwd, callback) {
             }
             var failure = user.login.failure;
             // 前回の失敗から一定時間経っている
-            if (failure.time - now > 60 * 1000) {
+            if (now - failure.time > LOCK_TIME) {
                 return next();
             }
 
-            // 連続指定回以上失敗している
-            if (failure.count >= 5) {
+            // 連続失敗回数が指定回数以下
+            if (failure.count < LOCK_FAILURE_COUNT) {
                 return next();
             }
 
@@ -49,45 +53,53 @@ AuthService.prototype.login = function(id, pwd, callback) {
         },
         function(next) {
             // パスワードが一致するか確認
-            if (pwd !== user.pwd) {
+            if (util.createHash(pwd) !== user.pwd) {
                 return next({name: 'パスワードが不一致'});
             }
 
             // ログイン日時書き込み
             var data = {
                 $set: {
-                    success: {
+                    'login.success': {
                         time: now
                     }
                 },
-                $unset: { failure: true }
+                $unset: { 'login.failure': true }
             };
-            userMongo.update({ _id: id }, data, function(err) {
+            userMongo.update({ _id: userId }, data, function(err) {
                 if (err) {
-                    console.log('failed login success update. id:', id);
+                    console.log('failed login success update. id:', userId);
                     return next(err);
                 }
                 return next();
             });
         }
     ], function(err) {
+        if (!err) {
+            return callback();
+        }
+
         var failedError = { name: 'ログイン失敗', msg: 'ログインに失敗しました。' };
+
         if (err.name === 'ロックアウト') {
             return callback(err);
         }
+
         if (err.name !== 'パスワードが不一致') {
             return callback(failedError);
         }
+
         // failureに日時とカウント書き込み
         var data = {
-            $set: { failure: { time: now }},
-            $inc: 1
+            $set: { 'login.failure.time': now },
+            $inc: { 'login.failure.count': 1 }
         };
-        userMongo.update( { _id: id }, data, function(err) {
+        userMongo.update( { _id: userId }, data, function(err) {
             if (err) {
-                return callback(failedError);
+                // 更新に失敗してもログ出力のみ
+                console.log('failed record login failure. id:', userId);
             }
-            return callback();
+            return callback(failedError);
         });
     });
 };

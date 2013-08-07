@@ -3,35 +3,7 @@
  * @id login.js
  * @auther Asuki Takamine
  */
-var userService = require('./service/user');
-var util = require('./util');
-
-var users = {
-    'admin': 'admin'
-};
-
-function validate(user, callback) {
-    var isAdmin = Object.keys(users).some(function(userId) {
-        return user.userId === userId && user.pwd === users[userId];
-    });
-    if (isAdmin) {
-        return callback();
-    }
-
-    userService.get(user.userId, function(err, result) {
-        if (err) {
-            console.error(err);
-            return callback({msg: 'ログインに失敗しました。'});
-        }
-        if (!result) {
-            return callback({msg: 'ログイン情報に誤りがあります。'});
-        }
-        if (util.createHash(user.pwd) !== result.pwd) {
-            return callback({msg: 'ログイン情報に誤りがあります。'});
-        }
-        return callback();
-    });
-}
+var authService = require('./service/auth');
 
 module.exports = function(req, res, next) {
     // TODO ログインチェック対象外
@@ -70,7 +42,7 @@ module.exports = function(req, res, next) {
     }
 
     if (login) {
-        validate(user, function(err) {
+        authService.login(user.userId, user.pwd, function(err) {
             if (err) {
                 req.flash('error', err.msg);
                 req.url = '/';
