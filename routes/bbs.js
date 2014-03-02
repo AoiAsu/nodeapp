@@ -7,6 +7,10 @@ exports.get = function(req, res){
         }
 
         result = result || [];
+        for (var i = 0; i < result.length; i++) {
+            var date = new Date(result[i].time);
+            result[i].datetime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
+        }
         return res.render('bbs', { list: result });
     });
 };
@@ -26,6 +30,10 @@ exports.post = function(req, res) {
             }
 
             result = result || [];
+            for (var i = 0; i < result.length; i++) {
+                var date = new Date(result[i].time);
+                result[i].datetime = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
+            }
             return res.render('bbs', { list: result });
         });
     });
