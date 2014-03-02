@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    h1 BBS
+
+    #{err}
+
+    form(action='/bbs', method='post')
+        fieldset
+            legend 投稿
+            p
+                label(for='name') ユーザ名
+                input(name='name')
+            p
+                label(for='message') メッセージ
+                input(name='message')
+            input(type='submit')
+
+    table
+        tr
+            th 名前
+            th コメント
+            th 日付
+        if list && list.length
+            each comment in list
+                tr
+                    th #{comment.name}
+                    th #{comment.comment}
+                    th #{comment.time}

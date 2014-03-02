@@ -6,6 +6,7 @@ exports.get = function(req, res){
             return res.render('bbs', { err: err.message });
         }
 
+        result = result || [];
         return res.render('bbs', { list: result });
     });
 };
@@ -24,6 +25,7 @@ exports.post = function(req, res) {
                 return res.render('bbs', { err: err.message });
             }
 
+            result = result || [];
             return res.render('bbs', { list: result });
         });
     });
